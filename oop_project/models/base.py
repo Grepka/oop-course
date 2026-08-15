@@ -1,7 +1,7 @@
 from uuid import UUID
 
 
-class Base():
+class Base:
     def __init__(self, id: UUID):
         self._id = id
 

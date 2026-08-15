@@ -1,10 +1,9 @@
-from os import name
 from uuid import UUID
 
 from models.base import Base
 
 class Entity(Base):
-    def _init_(
+    def __init__(
             self,
             id: UUID,
             name: str,
