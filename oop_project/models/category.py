@@ -3,9 +3,15 @@ from typing import Self
 
 
 from models.entity import Entity
+from mixins.serializable import Serializable
 
 
-class Category(Entity):
+class Category(Entity, Serializable):
+    serializable_fields = (
+        "id",
+        "name",
+        "description",
+    )
 
     @classmethod
     def create(cls, name:str, description:str) -> Self:
