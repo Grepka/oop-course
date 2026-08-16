@@ -7,16 +7,15 @@ from mixins.serializable import Serializable
 from models.base import Base
 
 
-
 class CVSStorage[T: Serializable | Base](StorageProtocol):
-    def __init__(self, path: Path, model_class: type[T]) -> None:
-        self.path = path
+    def __init__(self, filepath: Path, model_class: type[T]) -> None:
+        self.filepath = filepath
         self.model_class = model_class
         self.data: dict[UUID, T] = {}
 
     def save(self) -> None:
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        with self.path.open("w") as file:
+        self.filepath.parent.mkdir(parents=True, exist_ok=True)
+        with self.filepath.open("w") as file:
             writer = DictWriter(
                 f=file,
                 fieldnames=self.model_class.serializable_fields,
@@ -28,10 +27,10 @@ class CVSStorage[T: Serializable | Base](StorageProtocol):
             )
 
     def load(self) -> None:
-        if not self.path.exists():
+        if not self.filepath.exists():
             return
 
-        with self.path.open("r") as file:
+        with self.filepath.open("r") as file:
             reader = DictReader(file)
             for row in reader:
                 entity = self.model_class.from_dict(row)
