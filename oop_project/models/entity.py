@@ -15,7 +15,7 @@ class Entity(Base):
 
 
     def __str__(self):
-        return f"{self.__class__.__name__}(id={self.id}, name={self.name!r})"
+        return f"{self.__class__.__name__}(id={self.id!r}, name={self.name!r})"
 
     def __repr__(self):
         return str(self)
