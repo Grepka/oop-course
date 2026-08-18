@@ -1,11 +1,20 @@
 from uuid import UUID, uuid4
-from typing import Self
+from typing import Self, Any
 
+from mixins.serializable import Serializable
 from models.entity import Entity
 from models.category import Category
 
 
-class Note(Entity):
+class Note(Entity, Serializable):
+    serializable_fields = (
+        "id",
+        "name",
+        "description",
+        "text",
+        "category"
+    )
+
     def __init__(
             self,
             id: UUID,
@@ -14,8 +23,9 @@ class Note(Entity):
             text: str,
             category: Category
     ):
-        super().__init__(id, name, description)
+        Entity.__init__(self, id, name, description)
         self._category = category
+        self.text = ""
         self._text = text
 
 
@@ -34,6 +44,20 @@ class Note(Entity):
         if len(text) > 500:
             text = text[:500]
         self._text = str(text)
+
+    @classmethod
+    def deserialize_text(cls, value: Any) -> str:
+        if value is None:
+            return ""
+        return str(value)
+
+    @classmethod
+    def deserialize_category(cls, value: Any) -> str:
+        from storage.category_storage import category_storage
+        return category_storage.data[UUID(value)]
+
+    def serialize_category(self):
+        return self.category.id
 
     @classmethod
     def create(

@@ -10,9 +10,25 @@ class Serializable:
     def to_dict(self) -> dict:
         data = {}
         for field in self.serializable_fields:
-            data[field] = getattr(self, field, None)
+            data[field] = self._serialize_field(field)
         return data
 
     @classmethod
-    def from_dict(cls, data:dict[str, Any]) -> Self:
+    def from_dict(cls, data: dict[str, Any]) -> Self:
+        for field, value in data.items():
+            data[field] = cls._deserialize_field(field, value)
         return cls(**data)
+
+    @classmethod
+    def _deserialize_field(cls, field_name: str, value: Any) -> Any:
+        if deserializer := getattr(cls, f"deserialize_{field_name}", None):
+            return deserializer(value)
+        return value
+
+    def _serialize_field(self, field_name: str) -> str | None:
+        if serializer := getattr(self, f"serialize_{field_name}", None):
+            return serializer()
+        return getattr(self, field_name, None)
+
+
+

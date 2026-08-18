@@ -35,7 +35,3 @@ class CVSStorage[T: Serializable | Base](StorageProtocol):
             for row in reader:
                 entity = self.model_class.from_dict(row)
                 self.data[entity.id] = entity
-
-
-
-
