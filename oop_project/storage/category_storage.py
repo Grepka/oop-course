@@ -2,18 +2,18 @@ from pathlib import Path
 
 
 from storage.csv_storage import CVSStorage
-from models.category import Category
+from models import Category
 from settings import CATEGORY_STORAGE_PATH
 
 
 class CategoryStorage(CVSStorage):
     """
-    Хранение категорий
+    Хранение категорий.
     """
     def __init__(
             self,
             filepath: Path,
-            model_class=Category,
+            model_class= Category,
     ):
         super().__init__(filepath, model_class)
 
@@ -22,9 +22,6 @@ class CategoryStorage(CVSStorage):
         self.data[category.id] = category
         self.save()
         return category
-
-    def all(self) -> list[Category]:
-        return list(self.data.values())
 
     def get_by_name(self, name: str) -> Category | None:
         for category in self.all():
